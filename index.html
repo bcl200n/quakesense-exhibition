@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>震韧智感 QuakeSense</title>
+<meta name="description" content="AI 驱动的城市抗震韧性多源时空感知与智能研判平台：InSAR 形变、固定视频、逐栋建筑、动态人口、道路与避难资源组织成分级证据，支撑震后 0–60 分钟的核查与疏散决策。">
+<meta name="theme-color" content="#0b1110">
+<meta property="og:title" content="震韧智感 QuakeSense">
+<meta property="og:description" content="城市级地震应急推演：约 1,295 万居民代理的全人口疏散情景回放。">
+<meta property="og:image" content="https://bcl200n.github.io/quakesense-exhibition/assets/sim-xian.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b1110'/%3E%3Cpath d='M3 17h6l2-6 4 13 3-10 2 5 2-2h7' fill='none' stroke='%23f2b347' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+@font-face{
+  font-family:"QS Serif";
+  src:url("assets/fonts/qs-serif.woff2") format("woff2");
+  font-weight:700 900;
+  font-display:swap;
+}
+
+:root{
+  --ground:#edf0ee;
+  --surface:#f7f9f8;
+  --ink:#13201e;
+  --ink-2:#43524f;
+  --ink-3:#6b7a76;
+  --rule:#cbd3d0;
+  --accent:#8e560c;
+  --amber:#e0a03a;
+  --teal:#1e6a80;
+  --risk:#b23a26;
+  --focus:#1e6a80;
+
+  --stage:#0b1110;
+  --stage-2:#131c1b;
+  --stage-rule:#24302e;
+  --stage-ink:#dce5e2;
+  --stage-dim:#8c9a96;
+  --stage-amber:#f2b347;
+  --stage-teal:#5db7cc;
+
+  --serif:"QS Serif","Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC","SimSun",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","JetBrains Mono",Consolas,"Liberation Mono",monospace;
+
+  --t-xs:.8125rem;
+  --t-sm:.9375rem;
+  --t-md:1.0625rem;
+  --t-lg:1.3125rem;
+  --t-xl:clamp(1.5rem,1.1rem + 1.6vw,1.9rem);
+  --t-2xl:clamp(1.95rem,1.2rem + 3.4vw,3.25rem);
+
+  --wrap:1120px;
+  --gutter:clamp(18px,4vw,40px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f1514;
+    --surface:#151d1c;
+    --ink:#e3eae7;
+    --ink-2:#aebab6;
+    --ink-3:#7f8d89;
+    --rule:#26312f;
+    --accent:#f0b04a;
+    --amber:#f0b04a;
+    --teal:#6cc0d4;
+    --risk:#eb7a5e;
+    --focus:#6cc0d4;
+    --stage:#070b0a;
+    --stage-2:#101817;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1514;
+  --surface:#151d1c;
+  --ink:#e3eae7;
+  --ink-2:#aebab6;
+  --ink-3:#7f8d89;
+  --rule:#26312f;
+  --accent:#f0b04a;
+  --amber:#f0b04a;
+  --teal:#6cc0d4;
+  --risk:#eb7a5e;
+  --focus:#6cc0d4;
+  --stage:#070b0a;
+  --stage-2:#101817;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:var(--t-md);
+  line-height:1.75;
+  text-rendering:optimizeLegibility;
+}
+img,video,iframe{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gutter)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:var(--t-xs);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+}
+
+/* ---------- masthead ---------- */
+.mast{border-bottom:1px solid var(--rule)}
+.mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:60px}
+.mark{display:flex;align-items:center;gap:10px;text-decoration:none;white-space:nowrap}
+.mark svg{width:26px;height:26px;flex:none}
+.mark b{font-family:var(--serif);font-weight:900;font-size:1.125rem;letter-spacing:.04em}
+.mark span{font-family:var(--mono);font-size:var(--t-xs);color:var(--ink-3);letter-spacing:.06em}
+.nav{display:flex;gap:22px;font-size:var(--t-sm);overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{text-decoration:none;color:var(--ink-2);white-space:nowrap;padding:6px 0}
+.nav a:hover{color:var(--ink)}
+@media (max-width:640px){.mark span{display:none}.nav{gap:16px}}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(36px,6vw,72px) 0 clamp(24px,4vw,40px)}
+.hero .wrap{display:grid;gap:18px}
+.hero h1{
+  margin:0;
+  font-family:var(--serif);
+  font-weight:900;
+  font-size:var(--t-2xl);
+  line-height:1.22;
+  letter-spacing:.01em;
+  text-wrap:balance;
+  max-width:18em;
+}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.dek{margin:0;max-width:36em;color:var(--ink-2);font-size:var(--t-md)}
+
+/* the monitor: dark in both themes, the one loud object on the page */
+.stage{background:var(--stage);color:var(--stage-ink)}
+.stage .wrap{padding-top:clamp(14px,2.4vw,24px);padding-bottom:clamp(18px,3vw,30px)}
+.monitor{
+  position:relative;
+  border:1px solid var(--stage-rule);
+  background:#000;
+  aspect-ratio:16/9;
+  overflow:hidden;
+}
+.monitor video{width:100%;height:100%;object-fit:cover}
+.hud{
+  position:absolute;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:10px 14px;
+  font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.04em;
+  pointer-events:none;
+}
+.hud.top{top:0;background:linear-gradient(#000c,#0000)}
+.live{display:inline-flex;align-items:center;gap:8px;color:var(--stage-amber)}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--stage-amber);box-shadow:0 0 0 3px #f2b34733}
+@media (prefers-reduced-motion:no-preference){
+  .live i{animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.35}}
+}
+.readout{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  border:1px solid var(--stage-rule);border-top:0;
+}
+.readout div{padding:12px 14px;border-left:1px solid var(--stage-rule);min-width:0}
+.readout div:first-child{border-left:0}
+.readout b{
+  display:block;
+  font-family:var(--mono);font-variant-numeric:tabular-nums;
+  font-size:var(--t-lg);font-weight:600;color:var(--stage-ink);
+  line-height:1.3;white-space:nowrap;
+}
+.readout b.amber{color:var(--stage-amber)}
+.readout span{display:block;font-size:var(--t-xs);color:var(--stage-dim);line-height:1.45}
+@media (max-width:720px){
+  .readout{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .readout div:nth-child(3){border-left:0}
+  .readout div:nth-child(n+3){border-top:1px solid var(--stage-rule)}
+}
+.stage-foot{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;
+  margin-top:14px;
+}
+.stage-foot p{margin:0;font-size:var(--t-xs);color:var(--stage-dim);max-width:44em;line-height:1.6}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:10px 16px;
+  font-size:var(--t-sm);font-weight:600;text-decoration:none;
+  color:var(--stage);background:var(--stage-amber);
+  border-radius:3px;white-space:nowrap;
+}
+.btn:hover{background:#ffc766}
+.btn svg{width:14px;height:14px}
+
+/* ---------- sections ---------- */
+section.block{padding:clamp(52px,8vw,96px) 0;border-top:1px solid var(--rule)}
+section.block:first-of-type{border-top:0}
+.head{display:grid;gap:10px;margin-bottom:clamp(26px,4vw,44px);max-width:40em}
+.head h2{
+  margin:0;
+  font-family:var(--serif);font-weight:900;
+  font-size:var(--t-xl);line-height:1.3;letter-spacing:.01em;
+  text-wrap:balance;
+}
+.head p{margin:0;color:var(--ink-2)}
+
+/* timeline: a real sequence, so it is drawn as a time axis */
+.axis{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.axis li{position:relative;padding:26px 22px 0 0}
+.axis li::before{
+  content:"";position:absolute;left:0;right:0;top:8px;height:2px;background:var(--rule);
+}
+.axis li::after{
+  content:"";position:absolute;left:0;top:3px;width:12px;height:12px;border-radius:50%;
+  background:var(--ground);border:2px solid var(--amber);
+}
+.axis .t{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:var(--t-xs);color:var(--accent);letter-spacing:.06em}
+.axis h3{margin:4px 0 8px;font-family:var(--serif);font-weight:700;font-size:var(--t-lg);line-height:1.35}
+.axis .gap{margin:0 0 8px;font-size:var(--t-sm);color:var(--ink-3);line-height:1.6}
+.axis .do{margin:0;font-size:var(--t-sm);color:var(--ink);line-height:1.65}
+@media (max-width:820px){
+  .axis{grid-template-columns:1fr}
+  .axis li{padding:0 0 26px 30px}
+  .axis li::before{left:5px;right:auto;top:14px;bottom:0;width:2px;height:auto}
+  .axis li:last-child::before{display:none}
+  .axis li::after{top:6px}
+}
+
+/* product packages: definition rows, not cards */
+.packs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(24px,4vw,56px)}
+.pack{display:grid;grid-template-columns:8.5em minmax(0,1fr);gap:4px 18px;padding:20px 0;border-top:1px solid var(--rule)}
+.pack dt{font-family:var(--mono);font-size:var(--t-sm);font-weight:600;color:var(--teal);line-height:1.6}
+.pack dd{margin:0}
+.pack dd strong{display:block;font-weight:600;line-height:1.55}
+.pack dd span{display:block;font-size:var(--t-sm);color:var(--ink-3);line-height:1.6;margin-top:4px}
+@media (max-width:820px){.packs{grid-template-columns:1fr}}
+@media (max-width:460px){.pack{grid-template-columns:1fr}}
+
+/* evidence */
+.figures{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(18px,3vw,32px)}
+figure{margin:0;display:grid;gap:10px;align-content:start;min-width:0}
+figure .frame{background:var(--stage);border:1px solid var(--rule);overflow:hidden}
+figure img,figure video{width:100%;height:auto}
+figcaption{font-size:var(--t-sm);color:var(--ink-2);line-height:1.65}
+figcaption b{color:var(--ink);font-weight:600}
+figcaption .note{display:block;margin-top:2px;font-size:var(--t-xs);color:var(--ink-3)}
+.f-wide{grid-column:span 12}
+.f-7{grid-column:span 7}
+.f-5{grid-column:span 5}
+.f-6{grid-column:span 6}
+.f-4{grid-column:span 4}
+.f-8{grid-column:span 8}
+@media (max-width:820px){.f-7,.f-5,.f-6,.f-4,.f-8{grid-column:span 12}}
+.f-watch .frame{max-width:340px}
+
+.tally{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  margin-top:clamp(34px,5vw,56px);
+  border-top:2px solid var(--ink);
+}
+.tally div{padding:16px 16px 0 0;min-width:0}
+.tally b{display:block;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:var(--t-xl);font-weight:600;line-height:1.25}
+.tally b small{font-family:var(--sans);font-size:var(--t-sm);font-weight:500;margin-left:3px;color:var(--ink-2)}
+.tally span{display:block;font-size:var(--t-sm);color:var(--ink-2);line-height:1.55;margin-top:4px}
+.tally i{display:block;font-style:normal;font-size:var(--t-xs);color:var(--ink-3);margin-top:2px}
+@media (max-width:720px){.tally{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}}
+
+/* video */
+.player{position:relative;aspect-ratio:16/9;background:var(--stage);border:1px solid var(--rule)}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.player-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;margin-top:12px;font-size:var(--t-sm);color:var(--ink-2)}
+.player-foot a{color:var(--accent);font-weight:600;text-underline-offset:3px}
+
+/* lines we do not cross */
+.lines{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(24px,4vw,56px)}
+.lines li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;padding:18px 0;border-top:1px solid var(--rule)}
+.lines svg{width:18px;height:18px;margin-top:5px;color:var(--risk)}
+.lines strong{display:block;font-weight:600;line-height:1.55}
+.lines span{display:block;font-size:var(--t-sm);color:var(--ink-3);line-height:1.6;margin-top:2px}
+@media (max-width:820px){.lines{grid-template-columns:1fr}}
+
+/* team */
+.team{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,64px);align-items:start}
+.person h3{margin:0;font-family:var(--serif);font-weight:900;font-size:var(--t-xl);line-height:1.3}
+.person .role{margin:2px 0 14px;font-size:var(--t-sm);color:var(--accent);font-weight:600}
+.person p{margin:0 0 10px;color:var(--ink-2)}
+.facts{margin:0;display:grid;gap:0}
+.facts div{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.facts dt{font-size:var(--t-xs);color:var(--ink-3);letter-spacing:.06em;padding-top:3px}
+.facts dd{margin:0;font-size:var(--t-sm);line-height:1.65}
+.facts dd i{font-style:italic}
+@media (max-width:820px){.team{grid-template-columns:1fr}}
+
+/* footer */
+footer{background:var(--stage);color:var(--stage-dim);padding:clamp(36px,6vw,56px) 0}
+footer .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px 40px;align-items:center}
+footer p{margin:0 0 8px;font-size:var(--t-xs);line-height:1.7;max-width:46em}
+footer strong{color:var(--stage-ink);font-weight:600}
+footer a{color:var(--stage-teal)}
+.qr{display:grid;justify-items:center;gap:8px;text-align:center}
+.qr img{width:128px;height:128px;background:#fff;padding:6px;border-radius:2px;image-rendering:pixelated}
+.qr span{font-size:var(--t-xs);color:var(--stage-dim)}
+@media (max-width:560px){footer .wrap{grid-template-columns:1fr}.qr{justify-items:start;text-align:left}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="震韧智感 QuakeSense 首页">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#0b1110"/><path d="M3 17h6l2-6 4 13 3-10 2 5 2-2h7" fill="none" stroke="#f2b347" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <b>震韧智感</b><span>QuakeSense</span>
+    </a>
+    <nav class="nav" aria-label="页面导航">
+      <a href="#flow">流程</a>
+      <a href="#evidence">实证</a>
+      <a href="#video">视频</a>
+      <a href="#team">团队</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div class="eyebrow">城市抗震韧性 · 多源时空感知与智能研判</div>
+      <h1>震后 60 分钟，城市要知道<em>先查哪里、人往哪去</em>、依据是什么</h1>
+      <p class="dek">震韧智感把 InSAR 形变、固定视频、逐栋建筑、动态人口、道路与避难资源组织成分级证据：专业模型负责计算，AI 负责编排证据，专业人员负责最终决策。</p>
+    </div>
+  </div>
+
+  <div class="stage" id="sim">
+    <div class="wrap">
+      <div class="monitor">
+        <video id="simVideo" src="assets/sim-xian.mp4" poster="assets/sim-xian.jpg"
+               autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="metadata"
+               aria-label="西安全人口疏散情景回放：约 1,295 万居民代理在路网上的实时分布"></video>
+        <div class="hud top">
+          <span class="live"><i></i>情景回放</span>
+          <span>西安 · 全人口疏散推演</span>
+        </div>
+      </div>
+      <div class="readout" role="list">
+        <div role="listitem"><b class="amber">≈1,295 万</b><span>居民代理（全人口量级）</span></div>
+        <div role="listitem"><b>350</b><span>本地大模型领导者代理</span></div>
+        <div role="listitem"><b>4,242</b><span>次指挥决策</span></div>
+        <div role="listitem"><b>0.285 s</b><span>平均单次推理</span></div>
+      </div>
+      <div class="stage-foot">
+        <p>城市级多智能体疏散推演：道路容量、避难场所容量、动态重路由与人口守恒同时约束。画面为单一随机种子的情景回放，用于展示系统规模与交互方式，不构成疏散预测或官方预案。</p>
+        <a class="btn" href="#video"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg>观看完整演示 8:17</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="block" id="flow">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow">一次地震，四个时段</div>
+        <h2>客户缺的不是更多数据，而是一条能行动的证据链</h2>
+        <p>专业台网给得出震级与位置，却给不出城市里“先查哪一栋、人往哪条路走”。平台补的是台网与现场之间这一层。</p>
+      </div>
+      <ol class="axis">
+        <li>
+          <div class="t">T − 震前</div>
+          <h3>风险基线</h3>
+          <p class="gap">形变、建筑脆弱性、避难资源分散在不同系统</p>
+          <p class="do">InSAR、逐栋承灾体、道路与避难资源叠成一张可复算的风险底图</p>
+        </li>
+        <li>
+          <div class="t">T + 0–10 min</div>
+          <h3>快速感知</h3>
+          <p class="gap">“哪里先查”仍依赖人工经验</p>
+          <p class="do">复用既有固定视频提取相对震感线索，质量门剔除不可用结论</p>
+        </li>
+        <li>
+          <div class="t">T + 10–60 min</div>
+          <h3>任务编排</h3>
+          <p class="gap">建筑、人口、路网、避难容量缺少统一优先级</p>
+          <p class="do">AI 编排专业证据，输出 Top-N 核查清单与疏散压力测试</p>
+        </li>
+        <li>
+          <div class="t">恢复 · 复盘</div>
+          <h3>全程留痕</h3>
+          <p class="gap">结果常缺版本、来源、参数与复核状态</p>
+          <p class="do">保留任务号、参数版本、证据等级与人工复核记录</p>
+        </li>
+      </ol>
+
+      <div class="head" style="margin-top:clamp(52px,8vw,88px)">
+        <div class="eyebrow">产品体系</div>
+        <h2>四个产品包，按场景组合交付</h2>
+      </div>
+      <dl class="packs">
+        <div class="pack"><dt>QuakeSense Base</dt><dd><strong>InSAR、建筑、路网与避难资源风险基线</strong><span>风险底图 · 数据字典 · 重点核查候选</span></dd></div>
+        <div class="pack"><dt>QuakeSense Response</dt><dd><strong>视频相对震感、质量门与 0–60 分钟任务编排</strong><span>Top-N 核查清单 · 证据包 · 报告与 API</span></dd></div>
+        <div class="pack"><dt>QuakeSense Evac</dt><dd><strong>容量约束、动态重路由、人口守恒与生活圈评估</strong><span>疏散压力测试 · 瓶颈清单 · 情景回放</span></dd></div>
+        <div class="pack"><dt>QuakeSense Edge</dt><dd><strong>本地边缘节点、断网缓存与手表 / Android 端侧</strong><span>本地部署 · 穿戴端 · 培训运维</span></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block" id="evidence">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow">已经跑通的部分</div>
+        <h2>从卫星形变到手腕上的疏散指引</h2>
+        <p>以下均为项目已有原型与分析成果。每张图都注明了口径——情景是情景，推定是推定。</p>
+      </div>
+
+      <div class="figures">
+        <figure class="f-wide">
+          <div class="frame"><img src="assets/xichang-webgis.jpg" width="1400" height="798" loading="lazy" alt="西昌古城实景地形与逐栋建筑的 WebGIS 研判界面，深色底图上按风险着色的建筑轮廓"></div>
+          <figcaption><b>城市一张图研判界面 · 西昌</b>　实景地形、逐栋建筑、数据图层与任务状态联动。</figcaption>
+        </figure>
+
+        <figure class="f-6">
+          <div class="frame"><img src="assets/insar-xichang.jpg" width="1185" height="1068" loading="lazy" alt="西昌 Sentinel-1 升降轨融合垂向形变速率图，红色为抬升、蓝色为下沉，叠加断层线"></div>
+          <figcaption><b>InSAR 垂向形变速率 · 西昌</b>　Sentinel-1 升降轨融合，单位 mm/yr。<span class="note">局部负向形变为筛查候选，需现场复核，不直接等同沉降或灾害结论。</span></figcaption>
+        </figure>
+
+        <figure class="f-6">
+          <div class="frame"><img src="assets/anninghe-scenario.jpg" width="1060" height="1058" loading="lazy" alt="安宁河 M7.4 情景下西昌古城逐栋期望震害着色图，绿色为低、红色为高"></div>
+          <figcaption><b>逐栋承灾体情景 · 安宁河 M7.4（烈度Ⅷ）</b>　按期望震害为古城建筑排序。<span class="note">情景估算，用于演练与核查排序，不是震害预测。</span></figcaption>
+        </figure>
+
+        <figure class="f-8">
+          <div class="frame"><img src="assets/liangshan-3d.jpg" width="958" height="438" loading="lazy" alt="凉山州三维人口蜂窝热力图，柱高表示人口密度，侧栏显示人口统计图表"></div>
+          <figcaption><b>多维时空人口热力推演 · 凉山州</b>　蜂窝网格与三维柱高表达人口分布，可导入外部人口数据。</figcaption>
+        </figure>
+
+        <figure class="f-4">
+          <div class="frame"><img src="assets/nanning-network.jpg" width="400" height="370" loading="lazy" alt="南宁路网上的居民疏散分布：在途、已避难与不可达三种状态"></div>
+          <figcaption><b>路网疏散与生活圈 · 南宁</b>　在途、已避难与 1 km 不可达三种状态。<span class="note">避险点为推定集，尚未接入官方台账。</span></figcaption>
+        </figure>
+
+        <figure class="f-5 f-watch">
+          <div class="frame"><video src="assets/watch.mp4" poster="assets/watch.jpg" controls muted playsinline webkit-playsinline x5-playsinline preload="metadata" aria-label="震觉智能手表应用演示：实时震感、周边安全、疏散指引与多语言应急提示"></video></div>
+          <figcaption><b>“震觉”智能手表端</b>　实时震感、周边安全、步行疏散指引与多语言应急提示。<span class="note">watchOS 模拟器实录，位置为演示数据，界面已标注“非真实定位”。</span></figcaption>
+        </figure>
+
+        <figure class="f-7">
+          <div class="frame"><img src="assets/watch-board.jpg" width="1200" height="800" loading="lazy" alt="震觉手表五个功能界面：功能首页、实时震感、周边安全、疏散指引、应急信息"></div>
+          <figcaption><b>端侧功能一览</b>　功能首页、实时震感、周边安全、疏散指引、应急信息，与 WebGIS 平台联动。</figcaption>
+        </figure>
+      </div>
+
+      <div class="tally">
+        <div><b>57<small>景</small></b><span>Sentinel-1 影像</span><i>降轨 45 + 升轨 12</i></div>
+        <div><b>129<small>幅</small></b><span>小基线干涉图</span><i>西昌研究区</i></div>
+        <div><b>10.08<small>万栋</small></b><span>逐栋承灾体</span><i>情景链数据</i></div>
+        <div><b>21<small>城</small></b><span>疏散压力测试</span><i>13 个国家 · 探索性</i></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="video">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow">完整演示</div>
+        <h2>八分钟看完：从指挥层到城市级回放</h2>
+      </div>
+      <div class="player">
+        <iframe src="https://player.bilibili.com/player.html?bvid=BV1MbuH6KE18&amp;page=1&amp;high_quality=1&amp;danmaku=0&amp;autoplay=0"
+                title="QuakeSense 演示视频（哔哩哔哩）" loading="lazy" allowfullscreen
+                allow="fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+      <div class="player-foot">
+        <span class="mono">QuakeSense Demo · 英文讲解 · 8:17</span>
+        <a href="https://www.bilibili.com/video/BV1MbuH6KE18/" target="_blank" rel="noopener">在哔哩哔哩打开 ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="lines">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow">产品边界</div>
+        <h2>四条红线</h2>
+        <p>应急场景里，一个被误读的数字比没有数字更危险。</p>
+      </div>
+      <ul class="lines">
+        <li><svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 14 14 4" stroke="currentColor" stroke-width="1.6"/></svg><div><strong>不替代法定地震预警与烈度评定</strong><span>只接入权威预警与速报；视频只输出相对震感线索和证据等级。</span></div></li>
+        <li><svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 14 14 4" stroke="currentColor" stroke-width="1.6"/></svg><div><strong>不让大模型直接生成风险值或伤亡数</strong><span>量化结论由专业模型产生；AI 只做编排、检索与报告辅助。</span></div></li>
+        <li><svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 14 14 4" stroke="currentColor" stroke-width="1.6"/></svg><div><strong>高风险行动不自动执行</strong><span>100% 人工复核，保留复核人、时间、版本与证据包。</span></div></li>
+        <li><svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 14 14 4" stroke="currentColor" stroke-width="1.6"/></svg><div><strong>不夸大仿真结果</strong><span>明确区分实测、模型、内部情景与推定集四类口径及适用边界。</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="team">
+    <div class="wrap team">
+      <div class="person">
+        <div class="eyebrow">项目负责人</div>
+        <h3>边春霖</h3>
+        <p class="role">同济大学建筑学博士研究生 · 新西兰梅西大学访问学者</p>
+        <p>长期从事城市抗震韧性、城市更新、InSAR 地表形变监测与多智能体疏散模拟研究，负责平台总体技术路线与系统集成。2022 年获国家留学基金委资助赴梅西大学访学。</p>
+        <p>合作单位：同济大学、广西大学。</p>
+      </div>
+      <dl class="facts">
+        <div><dt>代表论文</dt><dd>Bian C, Meng G, Yang L, et al. Modeling seismic resilience and hospital evacuation: a comparative analysis of multi-agent reinforcement learning and classical evacuation models. <i>Buildings</i>, 2026, 16(8): 1538.</dd></div>
+        <div><dt>知识产权</dt><dd>授权实用新型专利 2 项（雷达角反射器）<br>软件著作权 4 项（InSAR 遥感监测与地理空间分析）</dd></div>
+        <div><dt>学术荣誉</dt><dd>第 15 届中日韩地理学联合会议 青年地理学家奖 · 最佳论文（2023，首尔）</dd></div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <p><strong>震韧智感 QuakeSense</strong>　AI 驱动的城市抗震韧性多源时空感知与智能研判平台</p>
+      <p>本页内容用于科研成果展示与公众安全教育，不构成官方地震预警、烈度评定或应急预案。图中城市情景、推演回放与推定避险点均为研究口径，实际应急请以当地政府与应急管理部门发布为准。</p>
+      <p class="mono">© 2026 QuakeSense</p>
+    </div>
+    <div class="qr">
+      <img src="assets/qr.png" width="128" height="128" alt="本页二维码：https://bcl200n.github.io/quakesense-exhibition/">
+      <span>手机扫码打开本页</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var v = document.getElementById("simVideo");
+  if (!v) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function fallback() { v.controls = true; }
+  if (reduce) { v.removeAttribute("autoplay"); v.pause(); fallback(); return; }
+  var p = v.play && v.play();
+  if (p && p.catch) p.catch(fallback);
+  // WeChat's in-app browser only releases autoplay after its bridge is ready.
+  document.addEventListener("WeixinJSBridgeReady", function () { v.play(); }, false);
+})();
+</script>
+</body>
+</html>

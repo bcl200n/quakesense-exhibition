@@ -1,0 +1,9 @@
+qs-serif.woff2 is a glyph subset of Noto Serif SC (variable 700-900),
+renamed "QS Serif Subset" as a Modified Version under the SIL Open Font License 1.1.
+
+Original copyright notice:
+© 2017-2023 Adobe (http://www.adobe.com/).
+
+License:
+This Font Software is licensed under the SIL Open Font License, Version 1.1. This Font Software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software.
+http://scripts.sil.org/OFL
