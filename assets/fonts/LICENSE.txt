@@ -1,4 +1,4 @@
-qs-serif.woff2 is a glyph subset of Noto Serif SC (variable 700-900),
+qs-serif.woff2 is a glyph subset of Noto Serif SC (variable, wght 700-900),
 renamed "QS Serif Subset" as a Modified Version under the SIL Open Font License 1.1.
 
 Original copyright notice:
