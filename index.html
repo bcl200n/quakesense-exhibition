@@ -392,7 +392,9 @@ footer strong{color:var(--stage-ink);font-weight:600}
 .qr{display:grid;justify-items:center;gap:8px;text-align:center}
 .qr img{width:128px;height:128px;background:#fff;padding:6px;border-radius:2px;image-rendering:pixelated}
 .qr span{font-size:var(--t-xs);color:var(--stage-dim)}
-.mentor{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.people{display:grid;gap:clamp(22px,3vw,34px);align-content:start}
+.mentor-card{padding-top:clamp(20px,3vw,30px);border-top:1px solid var(--rule)}
+.mentor{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}
 .mentor span{min-width:0;flex:1 1 9em}
 .mentor img{flex:0 0 96px;width:96px;min-width:96px;max-width:96px;height:96px;background:#fff;padding:5px;border-radius:2px;image-rendering:pixelated;box-sizing:content-box}
 @media (max-width:560px){.mentor{flex-wrap:wrap;gap:10px}}
@@ -666,6 +668,7 @@ footer strong{color:var(--stage-ink);font-weight:600}
 
   <section class="block" id="team">
     <div class="wrap team">
+      <div class="people">
       <div class="person" data-reveal>
         <div class="eyebrow" data-i18n="tm.eyebrow">项目负责人</div>
         <h3 data-i18n="tm.name">边春霖</h3>
@@ -673,11 +676,21 @@ footer strong{color:var(--stage-ink);font-weight:600}
         <p data-i18n="tm.p2">研究机构：同济大学抗震韧性与城市更新孟刚教授课题组。</p>
         <p data-i18n="tm.p1">长期从事城市抗震韧性、城市更新、InSAR 地表形变监测与多智能体疏散模拟研究，负责平台总体技术路线与系统集成。2022 年获国家留学基金委资助赴梅西大学访学。</p>
       </div>
+      <div class="person mentor-card" data-reveal>
+        <div class="eyebrow" data-i18n="mg.eyebrow">指导教师</div>
+        <h3 data-i18n="mg.name">孟刚</h3>
+        <p class="role" data-i18n="mg.role">同济大学建筑与城市规划学院建筑系 副教授 · 博士生导师</p>
+        <p data-i18n="mg.p1">研究方向为建筑技术、智能建筑设计与建造，所在学科团队为建筑智能设计与建造。1994 年起在同济大学建筑系任教，2009 年作为访问学者赴德国斯图加特大学交流；同济大学建筑设计研究院（集团）有限公司都市建筑设计院注册建筑师。</p>
+        <div class="mentor">
+          <a href="https://caup.tongji.edu.cn/29/3f/c34457a338239/page.htm?id=94038" target="_blank" rel="noopener"><img src="assets/qr-meng.png" width="96" height="96" data-i18n-alt="mg.qralt" alt="孟刚老师同济大学建筑与城市规划学院主页二维码"></a>
+          <span data-i18n="mg.qr">扫码或点击，打开同济大学建筑与城市规划学院的个人主页</span>
+        </div>
+      </div>
+      </div>
       <dl class="facts" data-reveal>
         <div><dt data-i18n="tm.dt1">代表论文</dt><dd>Bian C, Meng G, Yang L, et al. Modeling seismic resilience and hospital evacuation: a comparative analysis of multi-agent reinforcement learning and classical evacuation models. <i>Buildings</i>, 2026, 16(8): 1538.</dd></div>
         <div><dt data-i18n="tm.dt2">知识产权</dt><dd data-i18n="tm.dd2">授权实用新型专利 2 项（雷达角反射器）<br>软件著作权 4 项（InSAR 遥感监测与地理空间分析）</dd></div>
         <div><dt data-i18n="tm.dt3">学术荣誉</dt><dd data-i18n="tm.dd3">第 15 届中日韩地理学联合会议 青年地理学家奖 · 最佳论文（2023，首尔）</dd></div>
-        <div><dt data-i18n="tm.dt4">导师主页</dt><dd class="mentor"><a href="https://caup.tongji.edu.cn/29/3f/c34457a338239/page.htm?id=94038" target="_blank" rel="noopener"><img src="assets/qr-meng.png" width="96" height="96" data-i18n-alt="tm.qralt" alt="孟刚老师同济大学建筑与城市规划学院主页二维码"></a><span data-i18n="tm.dd4">扫码或点击，打开同济大学建筑与城市规划学院的个人主页</span></dd></div>
       </dl>
     </div>
   </section>
@@ -816,9 +829,13 @@ footer strong{color:var(--stage-ink);font-weight:600}
     "tm.dd2": "2 granted utility-model patents (radar corner reflectors)<br>4 registered software copyrights (InSAR monitoring and geospatial analysis)",
     "tm.dt3": "Honours",
     "tm.dd3": "Young Geographer Award, Best Paper, 15th China–Japan–Korea Joint Conference on Geography (Seoul, 2023)",
-    "tm.dt4": "Supervisor",
-    "tm.dd4": "Scan or tap for the faculty page at the College of Architecture and Urban Planning, Tongji University.",
-    "tm.qralt": "QR code for Gang Meng's faculty page at Tongji University",
+
+    "mg.eyebrow": "Supervisor",
+    "mg.name": "Gang Meng",
+    "mg.role": "Associate Professor and doctoral supervisor · Department of Architecture, College of Architecture and Urban Planning, Tongji University",
+    "mg.p1": "Works on building technology and on intelligent architectural design and construction, within the Intelligent Architectural Design and Construction group. Teaching in Tongji's Department of Architecture since 1994; visiting scholar at the University of Stuttgart in 2009; registered architect at the Urban Architectural Design Institute of Tongji Architectural Design (Group) Co., Ltd.",
+    "mg.qr": "Scan or tap for the faculty page at the College of Architecture and Urban Planning, Tongji University.",
+    "mg.qralt": "QR code for Gang Meng's faculty page at Tongji University",
 
     "ft.desc": "An AI platform for urban seismic resilience: multi-source spatiotemporal sensing and decision support",
     "ft.disc": "This page presents research results and supports public safety education. It is not an official earthquake warning, intensity assessment or emergency plan. City scenarios, simulation replays and inferred shelter points are research outputs; in a real emergency, follow your local government and emergency management authorities.",
