@@ -392,6 +392,10 @@ footer strong{color:var(--stage-ink);font-weight:600}
 .qr{display:grid;justify-items:center;gap:8px;text-align:center}
 .qr img{width:128px;height:128px;background:#fff;padding:6px;border-radius:2px;image-rendering:pixelated}
 .qr span{font-size:var(--t-xs);color:var(--stage-dim)}
+.mentor{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.mentor span{min-width:0;flex:1 1 9em}
+.mentor img{flex:0 0 96px;width:96px;min-width:96px;max-width:96px;height:96px;background:#fff;padding:5px;border-radius:2px;image-rendering:pixelated;box-sizing:content-box}
+@media (max-width:560px){.mentor{flex-wrap:wrap;gap:10px}}
 @media (max-width:560px){footer .wrap{grid-template-columns:1fr}.qr{justify-items:start;text-align:left}}
 
 /* ================================================================ motion
@@ -673,6 +677,7 @@ footer strong{color:var(--stage-ink);font-weight:600}
         <div><dt data-i18n="tm.dt1">代表论文</dt><dd>Bian C, Meng G, Yang L, et al. Modeling seismic resilience and hospital evacuation: a comparative analysis of multi-agent reinforcement learning and classical evacuation models. <i>Buildings</i>, 2026, 16(8): 1538.</dd></div>
         <div><dt data-i18n="tm.dt2">知识产权</dt><dd data-i18n="tm.dd2">授权实用新型专利 2 项（雷达角反射器）<br>软件著作权 4 项（InSAR 遥感监测与地理空间分析）</dd></div>
         <div><dt data-i18n="tm.dt3">学术荣誉</dt><dd data-i18n="tm.dd3">第 15 届中日韩地理学联合会议 青年地理学家奖 · 最佳论文（2023，首尔）</dd></div>
+        <div><dt data-i18n="tm.dt4">导师主页</dt><dd class="mentor"><a href="https://caup.tongji.edu.cn/29/3f/c34457a338239/page.htm?id=94038" target="_blank" rel="noopener"><img src="assets/qr-meng.png" width="96" height="96" data-i18n-alt="tm.qralt" alt="孟刚老师同济大学建筑与城市规划学院主页二维码"></a><span data-i18n="tm.dd4">扫码或点击，打开同济大学建筑与城市规划学院的个人主页</span></dd></div>
       </dl>
     </div>
   </section>
@@ -811,6 +816,9 @@ footer strong{color:var(--stage-ink);font-weight:600}
     "tm.dd2": "2 granted utility-model patents (radar corner reflectors)<br>4 registered software copyrights (InSAR monitoring and geospatial analysis)",
     "tm.dt3": "Honours",
     "tm.dd3": "Young Geographer Award, Best Paper, 15th China–Japan–Korea Joint Conference on Geography (Seoul, 2023)",
+    "tm.dt4": "Supervisor",
+    "tm.dd4": "Scan or tap for the faculty page at the College of Architecture and Urban Planning, Tongji University.",
+    "tm.qralt": "QR code for Gang Meng's faculty page at Tongji University",
 
     "ft.desc": "An AI platform for urban seismic resilience: multi-source spatiotemporal sensing and decision support",
     "ft.disc": "This page presents research results and supports public safety education. It is not an official earthquake warning, intensity assessment or emergency plan. City scenarios, simulation replays and inferred shelter points are research outputs; in a real emergency, follow your local government and emergency management authorities.",
